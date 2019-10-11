@@ -1,0 +1,30 @@
+{
+    "name": "amneale/php-torrents",
+    "description": "PHP library for manipulating torrent data",
+    "type": "library",
+    "authors": [
+        {
+            "name": "Adam Neale",
+            "email": "adam@adam-neale.co.uk"
+        }
+    ],
+    "require": {
+        "php": "^7.2"
+    },
+    "require-dev": {
+        "friendsofphp/php-cs-fixer": "^2.15",
+        "phpspec/phpspec": "^6.0",
+        "roave/security-advisories": "dev-master"
+    },
+    "config": {
+        "preferred-install": {
+            "*": "dist"
+        },
+        "sort-packages": true
+    },
+    "autoload": {
+        "psr-4": {
+            "Amneale\\Torrent\\": "src/"
+        }
+    }
+}
