@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Amneale\Torrent;
 
 use SandFox\Bencode\Engine\Decoder as BaseDecoder;
@@ -9,11 +11,10 @@ class Decoder
     /**
      * @param string $data
      *
-     * @return null
+     * @return array
      */
-    public function decode(string $data)
+    public function decode(string $data): array
     {
-        $decoder = new BaseDecoder($data);
-        return $decoder->decode();
+        return (new BaseDecoder($data))->decode();
     }
 }
