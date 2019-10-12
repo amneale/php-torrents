@@ -9,9 +9,11 @@
         }
     ],
     "require": {
-        "php": "^7.2"
+        "php": "^7.2",
+        "sandfoxme/bencode": "^1.3"
     },
     "require-dev": {
+        "adlawson/vfs": "^0.12.1",
         "friendsofphp/php-cs-fixer": "^2.15",
         "phpspec/phpspec": "^6.0",
         "roave/security-advisories": "dev-master"
