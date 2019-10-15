@@ -13,7 +13,7 @@ use Vfs\FileSystem;
 
 class FactorySpec extends ObjectBehavior
 {
-    private const TORRENT_HASH = '2fd4e1c67a2d28fced849ee1bb76e7391b93eb12';
+    private const TORRENT_INFO = 'encoded-torrent-info';
     private const TORRENT_DATA = [
         'info' => [
             'name' => 'my-torrent',
@@ -24,19 +24,29 @@ class FactorySpec extends ObjectBehavior
 
     public function let(Encoder $encoder, Decoder $decoder): void
     {
-        $encoder->encode(Argument::any())->willReturn(self::TORRENT_HASH);
+        $encoder->encode(Argument::any())->willReturn(self::TORRENT_INFO);
 
         $this->beConstructedWith($encoder, $decoder);
     }
 
+    public function it_loads_a_torrent_from_a_magnet_uri(): void
+    {
+        $hash = sha1(self::TORRENT_INFO);
+
+        $torrent = $this->fromMagnetUri('magnet:?xt=urn:btih:' . $hash);
+        $torrent->shouldBeAnInstanceOf(Torrent::class);
+        $torrent->getInfoHash()->shouldBe($hash);
+    }
+
     public function it_loads_a_torrent_from_a_file(Decoder $decoder): void
     {
+        $hash = sha1(self::TORRENT_INFO);
         $decoder->decode(Argument::any())->willReturn(self::TORRENT_DATA);
 
         $torrent = $this->fromFile($this->createVirtualFile('torrent-data'));
         $torrent->shouldBeAnInstanceOf(Torrent::class);
         $torrent->getName()->shouldBe(self::TORRENT_DATA['info']['name']);
-        $torrent->getInfoHash()->shouldBe(sha1(self::TORRENT_HASH));
+        $torrent->getInfoHash()->shouldBe(sha1(self::TORRENT_INFO));
     }
 
     public function it_can_can_read_trackers_from_nested_announce_list(Decoder $decoder): void

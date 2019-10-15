@@ -9,12 +9,12 @@ class Torrent
     /**
      * @var string
      */
-    private $name;
+    private $infoHash;
 
     /**
      * @var string
      */
-    private $infoHash;
+    private $name;
 
     /**
      * @var array
@@ -33,14 +33,14 @@ class Torrent
 
     /**
      * @param string $name
-     * @param string $infoHash
+     * @param string|null $infoHash
      * @param array $trackers
      * @param int|null $size
      * @param \DateTimeInterface|null $creationDate
      */
     public function __construct(
-        string $name,
         string $infoHash,
+        string $name = null,
         array $trackers = [],
         ?int $size = null,
         ?\DateTimeInterface $creationDate = null
@@ -55,17 +55,17 @@ class Torrent
     /**
      * @return string
      */
-    public function getName(): string
+    public function getInfoHash(): string
     {
-        return $this->name;
+        return $this->infoHash;
     }
 
     /**
      * @return string
      */
-    public function getInfoHash(): string
+    public function getName(): string
     {
-        return $this->infoHash;
+        return $this->name;
     }
 
     /**
