@@ -27,6 +27,19 @@ class Factory
     }
 
     /**
+     * @param string $uri
+     *
+     * @return Torrent
+     */
+    public function fromMagnetUri(string $uri): Torrent
+    {
+        $query = parse_url($uri, PHP_URL_QUERY);
+        parse_str($query, $parameters);
+
+        return new Torrent(substr($parameters['xt'], 9));
+    }
+
+    /**
      * @param string $path
      *
      * @return Torrent
@@ -38,8 +51,8 @@ class Factory
         );
 
         $torrent = new Torrent(
-            $data['info']['name'],
             $this->getHash($data['info']),
+            $data['info']['name'],
             $this->getTrackers($data),
             $this->getSize($data),
             $this->getCreationDate($data)
