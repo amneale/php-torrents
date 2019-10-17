@@ -91,4 +91,12 @@ class Torrent
     {
         return $this->creationDate;
     }
+
+    /**
+     * @return string
+     */
+    public function toMagnetUri(): string
+    {
+        return "magnet:?xt=urn:btih:{$this->infoHash}";
+    }
 }
