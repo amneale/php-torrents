@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Amneale\Torrent;
 
+use Amneale\Torrent\Engine\Decoder;
+use Amneale\Torrent\Engine\Encoder;
 use Amneale\Torrent\Exception\InvalidMagnetUriException;
 
 class Factory
@@ -21,13 +23,32 @@ class Factory
     private $decoder;
 
     /**
+     * @var Provider
+     */
+    private $provider;
+
+    /**
      * @param Encoder $encoder
      * @param Decoder $decoder
+     * @param Provider $provider
      */
-    public function __construct(Encoder $encoder, Decoder $decoder)
+    public function __construct(Encoder $encoder, Decoder $decoder, Provider $provider)
     {
         $this->encoder = $encoder;
         $this->decoder = $decoder;
+        $this->provider = $provider;
+    }
+
+    /**
+     * @param string $hash
+     *
+     * @return Torrent
+     */
+    public function fromInfoHash(string $hash): Torrent
+    {
+        return $this->fromFile(
+            $this->provider->getDownloadUrl($hash)
+        );
     }
 
     /**
@@ -43,8 +64,9 @@ class Factory
 
         $query = parse_url($uri, PHP_URL_QUERY);
         parse_str($query, $parameters);
+        $hash = substr($parameters['xt'], 9);
 
-        return new Torrent(substr($parameters['xt'], 9));
+        return $this->fromInfoHash($hash);
     }
 
     /**
