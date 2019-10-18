@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Amneale\Torrent;
+namespace Amneale\Torrent\Engine;
 
 use SandFox\Bencode\Engine\Encoder as BaseEncoder;
 
