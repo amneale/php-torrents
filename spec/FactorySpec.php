@@ -6,6 +6,7 @@ namespace spec\Amneale\Torrent;
 
 use Amneale\Torrent\Decoder;
 use Amneale\Torrent\Encoder;
+use Amneale\Torrent\Exception\InvalidMagnetUriException;
 use Amneale\Torrent\Torrent;
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
@@ -38,6 +39,11 @@ class FactorySpec extends ObjectBehavior
         $torrent->getInfoHash()->shouldBe($hash);
     }
 
+    public function it_excepts_when_passed_an_invalid_magnet_uri(): void
+    {
+        $this->shouldThrow(InvalidMagnetUriException::class)->during('fromMagnetUri', ['foo:bar:baz']);
+    }
+
     public function it_loads_a_torrent_from_a_file(Decoder $decoder): void
     {
         $hash = sha1(self::TORRENT_INFO);
@@ -46,7 +52,7 @@ class FactorySpec extends ObjectBehavior
         $torrent = $this->fromFile($this->createVirtualFile('torrent-data'));
         $torrent->shouldBeAnInstanceOf(Torrent::class);
         $torrent->getName()->shouldBe(self::TORRENT_DATA['info']['name']);
-        $torrent->getInfoHash()->shouldBe(sha1(self::TORRENT_INFO));
+        $torrent->getInfoHash()->shouldBe($hash);
     }
 
     public function it_can_can_read_trackers_from_nested_announce_list(Decoder $decoder): void

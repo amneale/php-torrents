@@ -4,8 +4,12 @@ declare(strict_types=1);
 
 namespace Amneale\Torrent;
 
+use Amneale\Torrent\Exception\InvalidMagnetUriException;
+
 class Factory
 {
+    private const MAGNET_REGEX = '/^magnet:\?xt=urn:btih:[0-9a-fA-F]{40}(?:&.*)?/';
+
     /**
      * @var Encoder
      */
@@ -33,6 +37,10 @@ class Factory
      */
     public function fromMagnetUri(string $uri): Torrent
     {
+        if (!preg_match(self::MAGNET_REGEX, $uri)) {
+            throw new InvalidMagnetUriException('Invalid Magnet URI: ' . $uri);
+        }
+
         $query = parse_url($uri, PHP_URL_QUERY);
         parse_str($query, $parameters);
 
