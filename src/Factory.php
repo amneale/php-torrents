@@ -110,9 +110,8 @@ class Factory
      */
     private function getTrackers($data): array
     {
-        $trackers = [];
-
         if (isset($data['announce-list'])) {
+            $trackers = [];
             array_walk_recursive(
                 $data['announce-list'],
                 static function (string $uri) use (&$trackers): void {
@@ -120,14 +119,14 @@ class Factory
                 }
             );
 
-            return $trackers;
+            return array_unique($trackers);
         }
 
         if (isset($data['announce'])) {
             return [$data['announce']];
         }
 
-        return array_unique($trackers);
+        return [];
     }
 
     /**
