@@ -89,6 +89,7 @@ class FactorySpec extends ObjectBehavior
                     'announce-list' => [
                         'foo.bar/tracker',
                         'nested' => ['foo.bar/tracker2'],
+                        'duplicate' => ['foo.bar/tracker'],
                     ],
                 ]
             )
