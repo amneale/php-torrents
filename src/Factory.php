@@ -127,7 +127,7 @@ class Factory
             return [$data['announce']];
         }
 
-        return $trackers;
+        return array_unique($trackers);
     }
 
     /**
