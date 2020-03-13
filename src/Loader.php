@@ -7,7 +7,7 @@ namespace Amneale\Torrent;
 use Amneale\Torrent\Engine\Decoder;
 use Amneale\Torrent\Engine\Encoder;
 
-final class Loader
+class Loader
 {
     private Encoder $encoder;
     private Decoder $decoder;
