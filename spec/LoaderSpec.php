@@ -13,7 +13,7 @@ use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
 use Vfs\FileSystem;
 
-class FactorySpec extends ObjectBehavior
+class LoaderSpec extends ObjectBehavior
 {
     private const TORRENT_INFO = 'encoded-torrent-info';
     private const TORRENT_DATA = [
@@ -57,14 +57,14 @@ class FactorySpec extends ObjectBehavior
     {
         $torrent = $this->fromInfoHash($this->hash);
         $torrent->shouldBeAnInstanceOf(Torrent::class);
-        $torrent->getInfoHash()->shouldBe($this->hash);
+        $torrent->infoHash->shouldBe($this->hash);
     }
 
     public function it_loads_a_torrent_from_a_magnet_uri(): void
     {
         $torrent = $this->fromMagnetUri('magnet:?xt=urn:btih:' . $this->hash);
         $torrent->shouldBeAnInstanceOf(Torrent::class);
-        $torrent->getInfoHash()->shouldBe($this->hash);
+        $torrent->infoHash->shouldBe($this->hash);
     }
 
     public function it_excepts_when_passed_an_invalid_magnet_uri(): void
@@ -76,8 +76,8 @@ class FactorySpec extends ObjectBehavior
     {
         $torrent = $this->fromFile(self::$file);
         $torrent->shouldBeAnInstanceOf(Torrent::class);
-        $torrent->getName()->shouldBe(self::TORRENT_DATA['info']['name']);
-        $torrent->getInfoHash()->shouldBe($this->hash);
+        $torrent->name->shouldBe(self::TORRENT_DATA['info']['name']);
+        $torrent->infoHash->shouldBe($this->hash);
     }
 
     public function it_can_can_read_trackers_from_nested_announce_list(Decoder $decoder): void
@@ -96,7 +96,7 @@ class FactorySpec extends ObjectBehavior
         );
 
         $torrent = $this->fromFile(self::$file);
-        $torrent->getTrackers()->shouldBe(['foo.bar/tracker', 'foo.bar/tracker2']);
+        $torrent->trackers->shouldBe(['foo.bar/tracker', 'foo.bar/tracker2']);
     }
 
     public function it_can_read_a_single_tracker_from_torrent_data(Decoder $decoder): void
@@ -106,7 +106,7 @@ class FactorySpec extends ObjectBehavior
         );
 
         $torrent = $this->fromFile(self::$file);
-        $torrent->getTrackers()->shouldBe(['foo.bar/tracker']);
+        $torrent->trackers->shouldBe(['foo.bar/tracker']);
     }
 
     public function it_can_sum_file_sizes(Decoder $decoder): void
@@ -126,7 +126,7 @@ class FactorySpec extends ObjectBehavior
         );
 
         $torrent = $this->fromFile(self::$file);
-        $torrent->getSize()->shouldBe(10);
+        $torrent->size->shouldBe(10);
     }
 
     public function it_can_read_length_from_torrent_data(Decoder $decoder): void
@@ -136,7 +136,7 @@ class FactorySpec extends ObjectBehavior
         );
 
         $torrent = $this->fromFile(self::$file);
-        $torrent->getSize()->shouldBe(12345);
+        $torrent->size->shouldBe(12345);
     }
 
     public function it_can_read_creation_date_from_torrent_data(Decoder $decoder): void
@@ -147,6 +147,6 @@ class FactorySpec extends ObjectBehavior
         );
 
         $torrent = $this->fromFile(self::$file);
-        $torrent->getCreationDate()->shouldBeLike(new \DateTime("@{$time}"));
+        $torrent->creationDate->shouldBeLike(new \DateTime("@{$time}"));
     }
 }

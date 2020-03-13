@@ -6,10 +6,5 @@ namespace Amneale\Torrent;
 
 interface Provider
 {
-    /**
-     * @param string $hash
-     *
-     * @return string
-     */
     public function getDownloadUrl(string $hash): string;
 }

@@ -6,32 +6,13 @@ namespace Amneale\Torrent;
 
 use Amneale\Torrent\Engine\Decoder;
 use Amneale\Torrent\Engine\Encoder;
-use Amneale\Torrent\Exception\InvalidMagnetUriException;
 
-class Factory
+final class Loader
 {
-    private const MAGNET_REGEX = '/^magnet:\?xt=urn:btih:[0-9a-fA-F]{40}(?:&.*)?/';
+    private Encoder $encoder;
+    private Decoder $decoder;
+    private Provider $provider;
 
-    /**
-     * @var Encoder
-     */
-    private $encoder;
-
-    /**
-     * @var Decoder
-     */
-    private $decoder;
-
-    /**
-     * @var Provider
-     */
-    private $provider;
-
-    /**
-     * @param Encoder $encoder
-     * @param Decoder $decoder
-     * @param Provider $provider
-     */
     public function __construct(Encoder $encoder, Decoder $decoder, Provider $provider)
     {
         $this->encoder = $encoder;
@@ -39,11 +20,6 @@ class Factory
         $this->provider = $provider;
     }
 
-    /**
-     * @param string $hash
-     *
-     * @return Torrent
-     */
     public function fromInfoHash(string $hash): Torrent
     {
         return $this->fromFile(
@@ -51,51 +27,28 @@ class Factory
         );
     }
 
-    /**
-     * @param string $uri
-     *
-     * @return Torrent
-     */
     public function fromMagnetUri(string $uri): Torrent
     {
-        if (!preg_match(self::MAGNET_REGEX, $uri)) {
-            throw new InvalidMagnetUriException('Invalid Magnet URI: ' . $uri);
-        }
+        $magnet = Magnet::fromUri($uri);
 
-        $query = parse_url($uri, PHP_URL_QUERY);
-        parse_str($query, $parameters);
-        $hash = substr($parameters['xt'], 9);
-
-        return $this->fromInfoHash($hash);
+        return $this->fromInfoHash($magnet->infoHash);
     }
 
-    /**
-     * @param string $path
-     *
-     * @return Torrent
-     */
     public function fromFile(string $path): Torrent
     {
         $data = $this->decoder->decode(
             file_get_contents($path)
         );
 
-        $torrent = new Torrent(
+        return new Torrent(
             $this->getHash($data['info']),
             $data['info']['name'],
             $this->getTrackers($data),
             $this->getSize($data),
             $this->getCreationDate($data)
         );
-
-        return $torrent;
     }
 
-    /**
-     * @param array $info
-     *
-     * @return string
-     */
     private function getHash(array $info): string
     {
         $infoString = $this->encoder->encode($info);
@@ -103,12 +56,7 @@ class Factory
         return sha1($infoString);
     }
 
-    /**
-     * @param $data
-     *
-     * @return array
-     */
-    private function getTrackers($data): array
+    private function getTrackers(array $data): array
     {
         if (isset($data['announce-list'])) {
             $trackers = [];
@@ -129,11 +77,6 @@ class Factory
         return [];
     }
 
-    /**
-     * @param $data
-     *
-     * @return array|null
-     */
     private function getSize($data): ?int
     {
         if (isset($data['files'])) {
@@ -142,18 +85,9 @@ class Factory
             );
         }
 
-        if (isset($data['length'])) {
-            return $data['length'];
-        }
-
-        return null;
+        return $data['length'] ?? null;
     }
 
-    /**
-     * @param array $data
-     *
-     * @return \DateTime|null
-     */
     private function getCreationDate(array $data): ?\DateTime
     {
         if (!empty($data['creation date'])) {
