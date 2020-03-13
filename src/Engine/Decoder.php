@@ -8,11 +8,6 @@ use SandFox\Bencode\Engine\Decoder as BaseDecoder;
 
 class Decoder
 {
-    /**
-     * @param string $data
-     *
-     * @return array
-     */
     public function decode(string $data): array
     {
         return (new BaseDecoder($data))->decode();

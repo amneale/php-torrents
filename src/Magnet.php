@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Amneale\Torrent;
 
 use Amneale\Torrent\Exception\InvalidMagnetUriException;
@@ -19,6 +21,21 @@ final class Magnet
         $this->infoHash = $infoHash;
         $this->name = $name;
         $this->trackers = $trackers;
+    }
+
+    public function __toString(): string
+    {
+        $query = Query::createFromParams(['xt' => 'urn:btih:' . $this->infoHash]);
+
+        if (!empty($this->name)) {
+            $query = $query->appendTo('dn', $this->name);
+        }
+
+        foreach ($this->trackers as $tracker) {
+            $query = $query->appendTo('tr', $tracker);
+        }
+
+        return (string) Uri::createFromString('magnet:')->withQuery($query);
     }
 
     public static function fromUri(string $uri): self
@@ -41,20 +58,5 @@ final class Magnet
     public static function fromTorrent(Torrent $torrent): self
     {
         return new self($torrent->infoHash, $torrent->name, $torrent->trackers);
-    }
-
-    public function __toString(): string
-    {
-        $query = Query::createFromParams(['xt' => 'urn:btih:' . $this->infoHash]);
-
-        if (!empty($this->name)) {
-            $query = $query->appendTo('dn', $this->name);
-        }
-
-        foreach ($this->trackers as $tracker) {
-            $query = $query->appendTo('tr', $tracker);
-        }
-
-        return (string) Uri::createFromString('magnet:')->withQuery($query);
     }
 }

@@ -12,13 +12,6 @@ final class Torrent
     public ?int $size;
     public ?\DateTimeInterface $creationDate;
 
-    /**
-     * @param string $name
-     * @param string|null $infoHash
-     * @param array $trackers
-     * @param int|null $size
-     * @param \DateTimeInterface|null $creationDate
-     */
     public function __construct(
         string $infoHash,
         string $name = null,
@@ -33,9 +26,6 @@ final class Torrent
         $this->creationDate = $creationDate;
     }
 
-    /**
-     * @return string
-     */
     public function toMagnetUri(): string
     {
         return (string) Magnet::fromTorrent($this);

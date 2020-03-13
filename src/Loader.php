@@ -6,30 +6,13 @@ namespace Amneale\Torrent;
 
 use Amneale\Torrent\Engine\Decoder;
 use Amneale\Torrent\Engine\Encoder;
-use Amneale\Torrent\Exception\InvalidMagnetUriException;
 
 final class Loader
 {
-    /**
-     * @var Encoder
-     */
-    private $encoder;
+    private Encoder $encoder;
+    private Decoder $decoder;
+    private Provider $provider;
 
-    /**
-     * @var Decoder
-     */
-    private $decoder;
-
-    /**
-     * @var Provider
-     */
-    private $provider;
-
-    /**
-     * @param Encoder $encoder
-     * @param Decoder $decoder
-     * @param Provider $provider
-     */
     public function __construct(Encoder $encoder, Decoder $decoder, Provider $provider)
     {
         $this->encoder = $encoder;
@@ -37,11 +20,6 @@ final class Loader
         $this->provider = $provider;
     }
 
-    /**
-     * @param string $hash
-     *
-     * @return Torrent
-     */
     public function fromInfoHash(string $hash): Torrent
     {
         return $this->fromFile(
@@ -49,11 +27,6 @@ final class Loader
         );
     }
 
-    /**
-     * @param string $uri
-     *
-     * @return Torrent
-     */
     public function fromMagnetUri(string $uri): Torrent
     {
         $magnet = Magnet::fromUri($uri);
@@ -61,11 +34,6 @@ final class Loader
         return $this->fromInfoHash($magnet->infoHash);
     }
 
-    /**
-     * @param string $path
-     *
-     * @return Torrent
-     */
     public function fromFile(string $path): Torrent
     {
         $data = $this->decoder->decode(
@@ -81,11 +49,6 @@ final class Loader
         );
     }
 
-    /**
-     * @param array $info
-     *
-     * @return string
-     */
     private function getHash(array $info): string
     {
         $infoString = $this->encoder->encode($info);
@@ -93,12 +56,7 @@ final class Loader
         return sha1($infoString);
     }
 
-    /**
-     * @param $data
-     *
-     * @return array
-     */
-    private function getTrackers($data): array
+    private function getTrackers(array $data): array
     {
         if (isset($data['announce-list'])) {
             $trackers = [];
@@ -119,11 +77,6 @@ final class Loader
         return [];
     }
 
-    /**
-     * @param $data
-     *
-     * @return array|null
-     */
     private function getSize($data): ?int
     {
         if (isset($data['files'])) {
@@ -135,11 +88,6 @@ final class Loader
         return $data['length'] ?? null;
     }
 
-    /**
-     * @param array $data
-     *
-     * @return \DateTime|null
-     */
     private function getCreationDate(array $data): ?\DateTime
     {
         if (!empty($data['creation date'])) {
