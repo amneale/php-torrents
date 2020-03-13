@@ -26,8 +26,8 @@ final class Torrent
         $this->creationDate = $creationDate;
     }
 
-    public function toMagnetUri(): string
+    public function toMagnet(): Magnet
     {
-        return (string) Magnet::fromTorrent($this);
+        return new Magnet($this->infoHash, $this->name, $this->trackers);
     }
 }

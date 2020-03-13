@@ -55,8 +55,8 @@ final class Magnet
         return new self($infoHash, $name, $trackers);
     }
 
-    public static function fromTorrent(Torrent $torrent): self
+    public function toTorrent(): Torrent
     {
-        return new self($torrent->infoHash, $torrent->name, $torrent->trackers);
+        return new Torrent($this->infoHash, $this->name, $this->trackers);
     }
 }

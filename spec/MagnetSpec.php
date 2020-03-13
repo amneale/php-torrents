@@ -44,15 +44,16 @@ class MagnetSpec extends ObjectBehavior
         $this->trackers->shouldBe(self::TRACKERS);
     }
 
-    public function it_can_be_built_from_a_torrent(): void
+    public function it_can_return_a_magnet(): void
     {
-        $torrent = new Torrent(self::HASH, self::NAME, self::TRACKERS);
+        $this->beConstructedWith(self::HASH, self::NAME, self::TRACKERS);
 
-        $this->beConstructedThrough('fromTorrent', [$torrent]);
+        $torrent = $this->toTorrent();
 
-        $this->infoHash->shouldBe(self::HASH);
-        $this->name->shouldBe(self::NAME);
-        $this->trackers->shouldBe(self::TRACKERS);
+        $torrent->shouldBeAnInstanceOf(Torrent::class);
+        $torrent->infoHash->shouldBe(self::HASH);
+        $torrent->name->shouldBe(self::NAME);
+        $torrent->trackers->shouldBe(self::TRACKERS);
     }
 
     public function it_can_be_represented_as_a_string(): void
