@@ -8,7 +8,7 @@ use Amneale\Torrent\Engine\Decoder;
 use Amneale\Torrent\Engine\Encoder;
 use Amneale\Torrent\Exception\InvalidMagnetUriException;
 
-class Factory
+class Loader
 {
     private const MAGNET_REGEX = '/^magnet:\?xt=urn:btih:[0-9a-fA-F]{40}(?:&.*)?/';
 

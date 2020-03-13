@@ -13,7 +13,7 @@ use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
 use Vfs\FileSystem;
 
-class FactorySpec extends ObjectBehavior
+class LoaderSpec extends ObjectBehavior
 {
     private const TORRENT_INFO = 'encoded-torrent-info';
     private const TORRENT_DATA = [
