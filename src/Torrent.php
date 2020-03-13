@@ -38,6 +38,6 @@ final class Torrent
      */
     public function toMagnetUri(): string
     {
-        return "magnet:?xt=urn:btih:{$this->infoHash}";
+        return (string) Magnet::fromTorrent($this);
     }
 }
