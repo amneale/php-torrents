@@ -6,7 +6,7 @@ use Amneale\Torrent\Exception\InvalidMagnetUriException;
 use League\Uri\Components\Query;
 use League\Uri\Uri;
 
-class Magnet
+final class Magnet
 {
     private const REGEX = '/^magnet:\?xt=urn:btih:[0-9a-fA-F]{40}(?:&.*)?/';
 

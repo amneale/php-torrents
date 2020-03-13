@@ -4,32 +4,13 @@ declare(strict_types=1);
 
 namespace Amneale\Torrent;
 
-class Torrent
+final class Torrent
 {
-    /**
-     * @var string
-     */
-    private $infoHash;
-
-    /**
-     * @var string
-     */
-    private $name;
-
-    /**
-     * @var array
-     */
-    private $trackers;
-
-    /**
-     * @var int|null
-     */
-    private $size;
-
-    /**
-     * @var \DateTimeInterface|null
-     */
-    private $creationDate;
+    public string $infoHash;
+    public ?string $name;
+    public array $trackers;
+    public ?int $size;
+    public ?\DateTimeInterface $creationDate;
 
     /**
      * @param string $name
@@ -50,46 +31,6 @@ class Torrent
         $this->trackers = $trackers;
         $this->size = $size;
         $this->creationDate = $creationDate;
-    }
-
-    /**
-     * @return string
-     */
-    public function getInfoHash(): string
-    {
-        return $this->infoHash;
-    }
-
-    /**
-     * @return string
-     */
-    public function getName(): string
-    {
-        return $this->name;
-    }
-
-    /**
-     * @return array
-     */
-    public function getTrackers(): array
-    {
-        return $this->trackers;
-    }
-
-    /**
-     * @return int|null
-     */
-    public function getSize(): ?int
-    {
-        return $this->size;
-    }
-
-    /**
-     * @return \DateTimeInterface|null
-     */
-    public function getCreationDate(): ?\DateTimeInterface
-    {
-        return $this->creationDate;
     }
 
     /**

@@ -8,7 +8,7 @@ use Amneale\Torrent\Engine\Decoder;
 use Amneale\Torrent\Engine\Encoder;
 use Amneale\Torrent\Exception\InvalidMagnetUriException;
 
-class Loader
+final class Loader
 {
     /**
      * @var Encoder
