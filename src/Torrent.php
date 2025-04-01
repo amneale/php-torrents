@@ -14,10 +14,10 @@ final class Torrent
 
     public function __construct(
         string $infoHash,
-        string $name = null,
+        ?string $name = null,
         array $trackers = [],
         ?int $size = null,
-        ?\DateTimeInterface $creationDate = null
+        ?\DateTimeInterface $creationDate = null,
     ) {
         $this->name = $name;
         $this->infoHash = $infoHash;
