@@ -11,7 +11,6 @@ use Amneale\Torrent\Provider;
 use Amneale\Torrent\Torrent;
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
-use Vfs\FileSystem;
 
 class LoaderSpec extends ObjectBehavior
 {
@@ -25,7 +24,7 @@ class LoaderSpec extends ObjectBehavior
     /**
      * @var string
      */
-    private static $file;
+    private $file;
 
     /**
      * @var string
@@ -35,17 +34,9 @@ class LoaderSpec extends ObjectBehavior
     public function let(Encoder $encoder, Decoder $decoder, Provider $provider): void
     {
         $this->hash = sha1(self::TORRENT_INFO);
+        $this->file = tempnam(sys_get_temp_dir(), 'loader');
 
-        if (null === self::$file) {
-            $filesystem = FileSystem::factory();
-            $filesystem->mount();
-            $filename = 'vfs://' . uniqid('file', true);
-            file_put_contents($filename, 'torrent-data');
-
-            self::$file = $filename;
-        }
-
-        $provider->getDownloadUrl($this->hash)->willReturn(self::$file);
+        $provider->getDownloadUrl($this->hash)->willReturn($this->file);
 
         $encoder->encode(Argument::any())->willReturn(self::TORRENT_INFO);
         $decoder->decode(Argument::any())->willReturn(self::TORRENT_DATA);
@@ -74,7 +65,7 @@ class LoaderSpec extends ObjectBehavior
 
     public function it_loads_a_torrent_from_a_file(): void
     {
-        $torrent = $this->fromFile(self::$file);
+        $torrent = $this->fromFile($this->file);
         $torrent->shouldBeAnInstanceOf(Torrent::class);
         $torrent->name->shouldBe(self::TORRENT_DATA['info']['name']);
         $torrent->infoHash->shouldBe($this->hash);
@@ -95,7 +86,7 @@ class LoaderSpec extends ObjectBehavior
             )
         );
 
-        $torrent = $this->fromFile(self::$file);
+        $torrent = $this->fromFile($this->file);
         $torrent->trackers->shouldBe(['foo.bar/tracker', 'foo.bar/tracker2']);
     }
 
@@ -105,7 +96,7 @@ class LoaderSpec extends ObjectBehavior
             array_merge(self::TORRENT_DATA, ['announce' => 'foo.bar/tracker'])
         );
 
-        $torrent = $this->fromFile(self::$file);
+        $torrent = $this->fromFile($this->file);
         $torrent->trackers->shouldBe(['foo.bar/tracker']);
     }
 
@@ -125,7 +116,7 @@ class LoaderSpec extends ObjectBehavior
             )
         );
 
-        $torrent = $this->fromFile(self::$file);
+        $torrent = $this->fromFile($this->file);
         $torrent->size->shouldBe(10);
     }
 
@@ -135,7 +126,7 @@ class LoaderSpec extends ObjectBehavior
             array_merge(self::TORRENT_DATA, ['length' => 12345])
         );
 
-        $torrent = $this->fromFile(self::$file);
+        $torrent = $this->fromFile($this->file);
         $torrent->size->shouldBe(12345);
     }
 
@@ -146,7 +137,8 @@ class LoaderSpec extends ObjectBehavior
             array_merge(self::TORRENT_DATA, ['creation date' => $time])
         );
 
-        $torrent = $this->fromFile(self::$file);
+        $torrent = $this->fromFile($this->file);
+        $torrent = $this->fromFile($this->file);
         $torrent->creationDate->shouldBeLike(new \DateTime("@{$time}"));
     }
 }

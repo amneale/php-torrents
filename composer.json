@@ -10,12 +10,11 @@
     ],
     "require": {
         "php": "^8.3",
-        "league/uri": "^7.5",
-        "league/uri-components": "^7.5",
+        "league/uri": "^6.8",
+        "league/uri-components": "^2.4",
         "arokettu/bencode": "^4.3"
     },
     "require-dev": {
-        "adlawson/vfs": "^0.12.1",
         "friendsofphp/php-cs-fixer": "^3.75",
         "phpspec/phpspec": "^7.5",
         "roave/security-advisories": "dev-master"
